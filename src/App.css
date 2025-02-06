@@ -1,0 +1,53 @@
+h2 {
+  margin: 10px 0px;
+}
+
+ul {
+  padding: 0px;
+  list-style-type: none;
+}
+
+li span {
+  margin: 5px 5px 5px 0px;
+  padding: 5px;
+  transition: background-color 0.2s ease;
+  background-color: #d1d1d1;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 5px;
+}
+
+li span:hover {
+  filter: brightness(85%);
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  height: auto;
+  resize: vertical;
+}
+
+button {
+  margin-right: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #c95b48;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: inline-block;
+}
+
+button:hover {
+  filter: brightness(85%);
+}
+
+.frame {
+  max-width: 1000px;
+  margin: 20px;
+  padding: 10px 20px;
+  background-color: #e0e0e2;
+  border-radius: 10px;
+}
