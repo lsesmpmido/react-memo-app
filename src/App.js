@@ -1,13 +1,14 @@
 import "./App.css";
 import { useState, useEffect } from "react";
+import MemoList from "./MemoList";
+import MemoForm from "./MemoForm";
 
 let nextId = 0;
 
 function App() {
-  const [content, setContent] = useState("");
   const [memos, setMemos] = useState([]);
-  const [showInput, setShowInput] = useState(false);
   const [selectedMemoId, setSelectedMemoId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     const savedMemos = JSON.parse(localStorage.getItem("memos"));
@@ -24,97 +25,56 @@ function App() {
     }
   }, [memos]);
 
-  function handleShowInputToggle(memoId) {
-    if (showInput) {
-      if (selectedMemoId === null || selectedMemoId === memoId) {
-        setShowInput(false);
-      }
+  function handleSelectMemo(memoId) {
+    setSelectedMemoId(memoId);
+    setShowForm(true);
+  }
+
+  function handleCreateMemo() {
+    if (showForm) {
+      setShowForm(false);
+      setSelectedMemoId(null);
     } else {
-      setShowInput(true);
+      setShowForm(true);
+      setSelectedMemoId(null);
     }
   }
 
-  function handleCreateMemoToggle() {
-    setSelectedMemoId(null);
-    setContent("");
-  }
-
-  function handleEditMemoToggle(memoId) {
-    if (memoId !== selectedMemoId) {
-      setSelectedMemoId(memoId);
-      const selectedMemo = memos.find((memo) => memo.id === memoId);
-      setContent(
-        selectedMemo ? selectedMemo.title + "\n" + selectedMemo.content : "",
-      );
-    }
-  }
-
-  function handleSaveMemo() {
-    const [title, ...mainContent] = content.split("\n");
-
+  function handleSaveMemo(title, content) {
     if (selectedMemoId === null) {
-      setMemos([...memos, { id: nextId++, title, content: mainContent }]);
+      setMemos([...memos, { id: nextId++, title, content }]);
     } else {
       setMemos(
         memos.map((memo) =>
-          memo.id === selectedMemoId
-            ? { ...memo, title, content: mainContent }
-            : memo,
+          memo.id === selectedMemoId ? { ...memo, title, content } : memo,
         ),
       );
     }
-    setShowInput(false);
-    setSelectedMemoId(null);
+    setShowForm(false);
   }
 
-  function handleDeleteMemo() {
-    setMemos(memos.filter((memo) => memo.id !== selectedMemoId));
-    setShowInput(false);
+  function handleDeleteMemo(memoId) {
+    setMemos(memos.filter((memo) => memo.id !== memoId));
     setSelectedMemoId(null);
+    setShowForm(false);
   }
+
+  const selectedMemo = memos.find((memo) => memo.id === selectedMemoId);
 
   return (
     <>
       <h1>メモ帳</h1>
-      <div className="frame">
-        <h2>一覧</h2>
-        <button
-          onClick={() => {
-            handleShowInputToggle();
-            handleCreateMemoToggle();
-          }}
-        >
-          +
-        </button>
-        <ul>
-          {memos.map((memo) => (
-            <li key={memo.id}>
-              <span
-                onClick={() => {
-                  handleShowInputToggle(memo.id);
-                  handleEditMemoToggle(memo.id);
-                }}
-              >
-                {memo.title}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      {showInput && (
-        <div className="frame">
-          <h2>{selectedMemoId === null ? "追加" : "編集"}</h2>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-          <button onClick={handleSaveMemo}>
-            {selectedMemoId === null ? "作成" : "更新"}
-          </button>
-          {selectedMemoId !== null && (
-            <button onClick={handleDeleteMemo}>削除</button>
-          )}
-        </div>
+      <MemoList
+        memos={memos}
+        onSelectMemo={handleSelectMemo}
+        onCreateMemo={handleCreateMemo}
+      />
+      {showForm && (
+        <MemoForm
+          selectedMemo={selectedMemo}
+          onSaveMemo={handleSaveMemo}
+          onDeleteMemo={handleDeleteMemo}
+        />
       )}
     </>
   );
