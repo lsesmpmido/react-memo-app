@@ -18,6 +18,8 @@ function App() {
   useEffect(() => {
     if (memos.length > 0) {
       localStorage.setItem("memos", JSON.stringify(memos));
+    } else {
+      localStorage.removeItem("memos");
     }
   }, [memos]);
 
@@ -37,7 +39,8 @@ function App() {
   }
 
   function handleSaveMemo(title, content) {
-    const nextId = memos.length > 0 ? Math.max(...memos.map((memo) => memo.id)) + 1 : 0;
+    const nextId =
+      memos.length > 0 ? Math.max(...memos.map((memo) => memo.id)) + 1 : 0;
     if (selectedMemoId === null) {
       setMemos([...memos, { id: nextId, title, content }]);
     } else {
