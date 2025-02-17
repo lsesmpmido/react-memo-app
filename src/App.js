@@ -4,16 +4,12 @@ import MemoList from "./MemoList";
 import MemoForm from "./MemoForm";
 
 function App() {
-  const [memos, setMemos] = useState([]);
+  const [memos, setMemos] = useState(() => {
+    const savedMemos = JSON.parse(localStorage.getItem("memos"));
+    return savedMemos || [];
+  });
   const [selectedMemoId, setSelectedMemoId] = useState(null);
   const [showForm, setShowForm] = useState(false);
-
-  useEffect(() => {
-    const savedMemos = JSON.parse(localStorage.getItem("memos"));
-    if (savedMemos) {
-      setMemos(savedMemos);
-    }
-  }, []);
 
   useEffect(() => {
     if (memos.length > 0) {
