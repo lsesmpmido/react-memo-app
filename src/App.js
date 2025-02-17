@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import MemoList from "./MemoList";
 import MemoForm from "./MemoForm";
 
-let nextId = 0;
-
 function App() {
   const [memos, setMemos] = useState([]);
   const [selectedMemoId, setSelectedMemoId] = useState(null);
@@ -14,8 +12,6 @@ function App() {
     const savedMemos = JSON.parse(localStorage.getItem("memos"));
     if (savedMemos) {
       setMemos(savedMemos);
-      nextId =
-        savedMemos.length > 0 ? savedMemos[savedMemos.length - 1].id + 1 : 0;
     }
   }, []);
 
@@ -41,8 +37,9 @@ function App() {
   }
 
   function handleSaveMemo(title, content) {
+    const nextId = memos.length > 0 ? Math.max(...memos.map((memo) => memo.id)) + 1 : 0;
     if (selectedMemoId === null) {
-      setMemos([...memos, { id: nextId++, title, content }]);
+      setMemos([...memos, { id: nextId, title, content }]);
     } else {
       setMemos(
         memos.map((memo) =>
