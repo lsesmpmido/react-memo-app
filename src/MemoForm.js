@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { SignInContext } from "./Context.js";
 
 function MemoForm({ selectedMemo, onSaveMemo, onDeleteMemo }) {
   const [content, setContent] = useState("");
+  const isSignIn = useContext(SignInContext);
 
   useEffect(() => {
     if (selectedMemo) {
@@ -18,10 +20,14 @@ function MemoForm({ selectedMemo, onSaveMemo, onDeleteMemo }) {
 
   return (
     <div className="frame">
-      <h2>{selectedMemo ? "編集" : "追加"}</h2>
+      {isSignIn && <h2>{selectedMemo ? "編集" : "追加"}</h2>}
       <textarea value={content} onChange={(e) => setContent(e.target.value)} />
-      <button onClick={handleSaveMemo}>{selectedMemo ? "更新" : "作成"}</button>
-      {selectedMemo && (
+      {isSignIn && (
+        <button onClick={handleSaveMemo}>
+          {selectedMemo ? "更新" : "作成"}
+        </button>
+      )}
+      {selectedMemo && isSignIn && (
         <button onClick={() => onDeleteMemo(selectedMemo.id)}>削除</button>
       )}
     </div>

@@ -2,6 +2,7 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import MemoList from "./MemoList";
 import MemoForm from "./MemoForm";
+import { SignInContext } from "./Context.js";
 
 function App() {
   const [memos, setMemos] = useState(() => {
@@ -10,6 +11,7 @@ function App() {
   });
   const [selectedMemoId, setSelectedMemoId] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [isSignIn, setIsSignIn] = useState(false);
 
   useEffect(() => {
     if (memos.length > 0) {
@@ -55,11 +57,18 @@ function App() {
     setShowForm(false);
   }
 
+  function handleSignIn() {
+    setIsSignIn((prevSignIn) => !prevSignIn);
+  }
+
   const selectedMemo = memos.find((memo) => memo.id === selectedMemoId);
 
   return (
-    <>
+    <SignInContext.Provider value={isSignIn}>
       <h1>メモ帳</h1>
+      <button onClick={handleSignIn}>
+        {isSignIn ? "ログアウト" : "ログイン"}
+      </button>
       <MemoList
         memos={memos}
         onSelectMemo={handleSelectMemo}
@@ -72,7 +81,7 @@ function App() {
           onDeleteMemo={handleDeleteMemo}
         />
       )}
-    </>
+    </SignInContext.Provider>
   );
 }
 
